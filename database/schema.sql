@@ -131,7 +131,7 @@ CREATE TABLE Trick (
     TrickNumber      INTEGER NOT NULL
                       CHECK (TrickNumber BETWEEN 0 AND 4),
 
-    WinnerPlayerID   INTEGER NOT NULL,
+    WinnerPlayerID   INTEGER,
 
     FOREIGN KEY (RoundID)
         REFERENCES Round(RoundID)
@@ -176,3 +176,52 @@ CREATE TABLE CardPlay (
 
     UNIQUE (TrickID, CardID)
 );
+
+
+
+
+
+-- ==========================================
+-- Bots
+-- ==========================================
+
+INSERT INTO Player (Name, IsCPU)
+VALUES
+('Alice', 1),
+('Bob', 1),
+('Charles', 1);
+
+
+-- ==========================================
+-- Euchre Deck
+-- ==========================================
+
+INSERT INTO Card (Suit, Rank, CardValue)
+VALUES
+('Hearts', '9', 9),
+('Hearts', '10', 10),
+('Hearts', 'J', 11),
+('Hearts', 'Q', 12),
+('Hearts', 'K', 13),
+('Hearts', 'A', 14),
+
+('Diamonds', '9', 9),
+('Diamonds', '10', 10),
+('Diamonds', 'J', 11),
+('Diamonds', 'Q', 12),
+('Diamonds', 'K', 13),
+('Diamonds', 'A', 14),
+
+('Clubs', '9', 9),
+('Clubs', '10', 10),
+('Clubs', 'J', 11),
+('Clubs', 'Q', 12),
+('Clubs', 'K', 13),
+('Clubs', 'A', 14),
+
+('Spades', '9', 9),
+('Spades', '10', 10),
+('Spades', 'J', 11),
+('Spades', 'Q', 12),
+('Spades', 'K', 13),
+('Spades', 'A', 14);
