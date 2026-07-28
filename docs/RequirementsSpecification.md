@@ -5,16 +5,16 @@
 **Project:** Euchre Game
 **Language:** Python
 **Database:** SQLite
-**Application Type:** CLI --> (Visual Implementation if time permits)
+**Application Type:** CLI
 **Programming Paradigm:** Object-Oriented Programming with Python coroutines for turn management
 
 ---
 
 # 1. Project Overview
 
-This project is a turn-based Euchre game developed in Python. The application supports local multiplayer and Human vs. CPU gameplay while storing persistent game data in a relational database.
+This project is a turn-based Euchre game developed in Python. The application supports Human vs. CPU gameplay while storing game data in a relational database.
 
-The system demonstrates object-oriented software design, coroutine-based turn management, and relational database interaction. Players can create profiles, play complete games of Euchre, save completed matches, and review historical statistics.
+The system demonstrates object-oriented software design, coroutine-based turn management, and relational database interaction. Players can create profiles, play complete games of Euchre, and review historical statistics.
 
 ---
 
@@ -36,7 +36,6 @@ The purpose of this project is to:
 The system includes:
 
 * Player management
-* Local multiplayer
 * Human vs. CPU gameplay
 * Full Euchre game logic
 * Score tracking
@@ -47,7 +46,7 @@ The system includes:
 
 The system does not include:
 
-* Online multiplayer
+* Multiplayer
 * User authentication
 * Network communication
 
@@ -91,20 +90,7 @@ The system shall allow users to start a new Euchre game.
 
 ---
 
-## FR-4 Game Mode Selection
-
-The system shall support:
-
-* Local Multiplayer
-* Human vs. CPU
-
-**Acceptance Criteria**
-
-* Selected mode initializes correctly.
-
----
-
-## FR-5 Shuffle Deck
+## FR-4 Shuffle Deck
 
 The system shall create and shuffle a standard Euchre deck.
 
@@ -116,7 +102,7 @@ The system shall create and shuffle a standard Euchre deck.
 
 ---
 
-## FR-6 Deal Cards
+## FR-5 Deal Cards
 
 The system shall deal five cards to each player.
 
@@ -127,7 +113,7 @@ The system shall deal five cards to each player.
 
 ---
 
-## FR-7 Trump Selection
+## FR-6 Trump Selection
 
 The system shall implement official Euchre trump selection.
 
@@ -137,10 +123,11 @@ The system shall implement official Euchre trump selection.
 * Players may order up or pass.
 * Dealer may pick up the card.
 * Second round of trump selection is supported.
+* Stick the dealer rule applies
 
 ---
 
-## FR-8 Play Card
+## FR-7 Play Card
 
 The system shall allow players to play legal cards during their turn.
 
@@ -152,7 +139,7 @@ The system shall allow players to play legal cards during their turn.
 
 ---
 
-## FR-9 Determine Trick Winner
+## FR-8 Determine Trick Winner
 
 The system shall determine the winner of each trick.
 
@@ -164,7 +151,7 @@ The system shall determine the winner of each trick.
 
 ---
 
-## FR-10 Record Trick
+## FR-9 Record Trick
 
 The system shall save each completed trick.
 
@@ -176,7 +163,7 @@ The system shall save each completed trick.
 
 ---
 
-## FR-11 Track Score
+## FR-10 Track Score
 
 The system shall maintain team scores.
 
@@ -188,7 +175,7 @@ The system shall maintain team scores.
 
 ---
 
-## FR-12 Determine Game Winner
+## FR-11 Determine Game Winner
 
 The system shall determine when the game has ended.
 
@@ -199,7 +186,7 @@ The system shall determine when the game has ended.
 
 ---
 
-## FR-13 Save Completed Game
+## FR-12 Save Completed Game
 
 The system shall save completed games.
 
@@ -211,20 +198,7 @@ The system shall save completed games.
 
 ---
 
-## FR-14 View Game History
-
-The system shall display previously completed games.
-
-**Acceptance Criteria**
-
-* Previous games are listed.
-* Winner is displayed.
-* Final score is displayed.
-* Date played is displayed.
-
----
-
-## FR-15 View Player Statistics
+## FR-13 View Player Statistics
 
 The system shall display player statistics.
 
@@ -237,7 +211,7 @@ The system shall display player statistics.
 
 ---
 
-## FR-16 Exit Application
+## FR-14 Exit Application
 
 The system shall safely exit.
 
@@ -269,55 +243,49 @@ The software shall use modular object-oriented design.
 
 ---
 
-## NFR-4 Portability
-
-The application shall run on Windows, macOS, and Linux with Python installed.
-
----
-
-## NFR-5 Usability
+## NFR-4 Usability
 
 The command-line interface shall provide clear prompts and readable output.
 
 ---
 
-## NFR-6 Data Integrity
+## NFR-5 Data Integrity
 
 The database shall enforce primary key and foreign key constraints.
 
 ---
 
-## NFR-7 Security
+## NFR-6 Security
 
 Database operations shall use parameterized SQL queries.
 
 ---
 
-## NFR-8 Availability
+## NFR-7 Availability
 
 The application shall function without an Internet connection.
 
 ---
 
-## NFR-9 Scalability
+## NFR-8 Scalability
 
 The database shall support storing thousands of completed games.
 
 ---
 
-## NFR-10 Accuracy
+## NFR-9 Accuracy
 
 The application shall correctly implement official Euchre rules.
 
 ---
 
-## NFR-11 Code Quality
+## NFR-10 Code Quality
 
 The project shall follow Python coding standards and include documentation comments.
 
 ---
 
-## NFR-12 Recoverability
+## NFR-11 Recoverability
 
 Unexpected program termination shall not corrupt existing database records.
 
@@ -358,11 +326,10 @@ Unexpected program termination shall not corrupt existing database records.
 **Main Flow**
 
 1. User selects New Game.
-2. User chooses Local Multiplayer or Human vs. CPU.
-3. Players are assigned.
-4. Deck is shuffled.
-5. Cards are dealt.
-6. Game begins.
+2. Players are assigned.
+3. Deck is shuffled.
+4. Cards are dealt.
+5. Game begins.
 
 **Postconditions**
 
@@ -452,27 +419,7 @@ Unexpected program termination shall not corrupt existing database records.
 
 ---
 
-## UC-7 View Game History
-
-**Actor:** User
-
-**Preconditions**
-
-* At least one completed game exists.
-
-**Main Flow**
-
-1. User selects Game History.
-2. System retrieves completed games.
-3. History is displayed.
-
-**Postconditions**
-
-* No data is modified.
-
----
-
-## UC-8 View Player Statistics
+## UC-7 View Player Statistics
 
 **Actor:** User
 
@@ -492,7 +439,7 @@ Unexpected program termination shall not corrupt existing database records.
 
 ---
 
-## UC-9 Exit Application
+## UC-8 Exit Application
 
 **Actor:** User
 
@@ -528,4 +475,3 @@ Unexpected program termination shall not corrupt existing database records.
 * Persistent storage uses a relational database.
 * Gameplay occurs through a command-line interface.
 * No Internet connection is required.
-* Multiplayer is limited to local play on a single computer.
