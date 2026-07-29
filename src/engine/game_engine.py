@@ -1,11 +1,34 @@
 from ui.cli import CLI
+from classes.game import Game
 
 class GameEngine:
     """
     Controls the flow of a Euchre game.
     """
-    def __init__(self):
-        pass
+    def __init__(
+            self,
+            players,
+            team0,
+            team1,
+            game_repo
+        ):
+            self.game_repo = game_repo
+            game_id = game_repo.create_game()
+            self.players = players
+            self.game = Game(
+                game_id,
+                team0,
+                team1,
+                players
+            )
+    
+            for seat, player in enumerate(players):
+                game_repo.add_player(
+                    game_id,
+                    player.player_id,
+                    player.team,
+                    seat
+                )
 
     def start(self):
         print("\nStarting Euchre!")

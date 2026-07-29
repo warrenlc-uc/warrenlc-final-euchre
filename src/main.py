@@ -1,6 +1,7 @@
 from database.database_manager import DatabaseManager
 from database.player_repository import PlayerRepository
 from database.statistics_repository import StatisticsRepository
+from database.game_repository import GameRepository
 
 from engine.game_engine import GameEngine
 from classes.human_player import HumanPlayer
@@ -18,6 +19,7 @@ def main():
 
         player_repo = PlayerRepository(database)
         stats_repo = StatisticsRepository(database)
+        game_repo = GameRepository(database)
 
 
         while True:
@@ -34,7 +36,7 @@ def main():
             elif choice == 2:
                 CLI.show_players(player_repo.get_players())
             elif choice == 3:
-                start_game(player_repo)
+                start_game(player_repo, game_repo)
             elif choice == 4:
                 show_statistics(
                     player_repo,
@@ -56,7 +58,8 @@ def main():
 
 
 def start_game(
-    player_repo
+    player_repo,
+    game_repo
 ):
     CLI.header("Starting Game")
     players = player_repo.get_players()
@@ -114,7 +117,12 @@ def start_game(
         else:
             p.team = 1
 
-    game = GameEngine()
+    game = GameEngine(
+        players,
+        team0,
+        team1,
+        game_repo
+    )
     game.start()
 
 
