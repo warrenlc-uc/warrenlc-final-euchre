@@ -3,6 +3,8 @@ from database.player_repository import PlayerRepository
 from database.statistics_repository import StatisticsRepository
 from database.game_repository import GameRepository
 from database.round_repository import RoundRepository
+from database.trick_repository import TrickRepository
+
 
 from engine.game_engine import GameEngine
 from classes.human_player import HumanPlayer
@@ -16,12 +18,13 @@ def main():
         database = DatabaseManager()
 
         database.connect()
-        database.initialize(create_new=True)
+        database.initialize(create_new=False)
 
         player_repo = PlayerRepository(database)
         stats_repo = StatisticsRepository(database)
         game_repo = GameRepository(database)
         round_repo = RoundRepository(database)
+        trick_repo = TrickRepository(database)
 
 
         while True:
@@ -38,7 +41,7 @@ def main():
             elif choice == 2:
                 CLI.show_players(player_repo.get_players())
             elif choice == 3:
-                start_game(player_repo, game_repo, round_repo)
+                start_game(player_repo, game_repo, round_repo, trick_repo)
             elif choice == 4:
                 show_statistics(
                     player_repo,
@@ -62,7 +65,8 @@ def main():
 def start_game(
     player_repo,
     game_repo,
-    round_repo
+    round_repo,
+    trick_repo
 ):
     CLI.header("Starting Game")
     players = player_repo.get_players()
@@ -127,7 +131,8 @@ def start_game(
         team0,
         team1,
         game_repo,
-        round_repo
+        round_repo,
+        trick_repo
     )
     game.start()
 

@@ -13,14 +13,19 @@ class DatabaseManager:
 
     def connect(self):
         if self.connection is None:
-            self.connection = sqlite3.connect(
-                self.database_path
-            )
-            self.connection.execute(
-                """
-                PRAGMA foreign_keys = ON;
-                """
-            )
+            db_exists = self.database_path.exists()
+            if not db_exists:
+                self.database_path.parent.mkdir(parents=True, exist_ok=True)
+
+            self.connection = sqlite3.connect(self.database_path)
+            self.connection.execute("PRAGMA foreign_keys = ON;")
+
+            if not db_exists:
+                with open(self.schema_path, "r") as file:
+                    schema = file.read()
+                self.connection.executescript(schema)
+                self.connection.commit()
+                
         return self.connection
 
     def cursor(self):

@@ -1,4 +1,6 @@
 from classes.deck import Deck
+from classes.trick import Trick
+import time
 
 class Round:
     """
@@ -17,10 +19,12 @@ class Round:
         self,
         dealer,
         players,
-        round_repo
+        round_repo,
+        trick_repo
     ):
         self.round_id = None
         self.round_repo = round_repo
+        self.trick_repo = trick_repo
         self.dealer = dealer
         self.players = players
         self.trump = None
@@ -115,8 +119,60 @@ class Round:
         index = self.players.index(self.dealer)
         return self.players[(index + 1) % 4]
 
-    def play_trick(self):
+    def play_trick(
+        self,
+        turns,
+        current_player
+    ):
         """
         Plays one trick.
         """
-        pass
+        trick = Trick(len(self.tricks),)
+
+        trick.trick_id = self.trick_repo.create_trick(
+            self.round_id,
+            trick.trick_number
+        )
+
+        active_players = self.get_active_players()
+
+        for i in range(len(active_players)):
+            time.sleep(1)
+
+            player = current_player
+            current_player.sort_hand(self.trump)
+
+            card = player.play_card(
+                trick.get_lead_suit(self.trump),
+                self.trump
+            )
+
+            trick.add_play(player, card)
+
+            if i < len(active_players)-1:
+                current_player = turns.send(None)
+
+
+
+        winner = trick.determine_winner(self.trump)
+        self.tricks.append(trick)
+
+        self.team_tricks[winner.team_number] += 1
+        
+        calling_team_tricks = self.team_tricks[self.caller.team_number]
+        defending_team_tricks = self.team_tricks[1 - self.caller.team_number]
+
+        self.round_repo.update_round(
+            self.round_id,
+            calling_team_tricks,
+            defending_team_tricks
+        )
+
+        self.trick_repo.finish_trick(
+            trick.trick_id,
+            winner.player_id
+        )
+
+        print()
+        print(f"Trick winner: {winner.name}")
+        return winner

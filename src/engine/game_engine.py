@@ -1,6 +1,8 @@
 from ui.cli import CLI
 from classes.game import Game
 from classes.round import Round
+from engine.turn_manager import TurnManager
+from rules.scoring import Scoring
 import time
 
 class GameEngine:
@@ -13,10 +15,12 @@ class GameEngine:
             team0,
             team1,
             game_repo,
-            round_repo
+            round_repo,
+            trick_repo
         ):
             self.game_repo = game_repo
             self.round_repo = round_repo
+            self.trick_repo = trick_repo
             game_id = game_repo.create_game()
             self.players = players
             self.game = Game(
@@ -38,12 +42,12 @@ class GameEngine:
         print("\nStarting Euchre!")
         CLI.pause()
 
-        while True:
+        while not self.game.is_finished():
             CLI.clear()
             dealer = self.game.current_dealer()
             print(f"Dealer: {dealer.name}")
 
-            current_round = Round(dealer, self.players, self.round_repo)
+            current_round = Round(dealer, self.players, self.round_repo, self.trick_repo)
             current_round.deal()
             self.show_round_start(current_round)
             self.select_trump(current_round)
@@ -58,10 +62,11 @@ class GameEngine:
                 current_round.lone_player.player_id if current_round.lone_player else None
             )
             CLI.pause()
-            self.play_round()
+            self.play_round(current_round)
+            self.score_round(current_round)
+            self.game.rotate_dealer()
             CLI.pause()
-            self.score_round()
-            CLI.pause()
+        print(f"\nTeam {self.game.winner} wins!")
 
     def show_round_start(self, current_round):
         """
@@ -149,14 +154,89 @@ class GameEngine:
 
         return True
 
-    def play_round(self):
+    def play_round(self, current_round):
         """
         Completes a single round of play.
         """
-        CLI.header("PLAY HERE")
+        active_players = current_round.get_active_players()
+        leader = current_round.get_leader()
+        turns = TurnManager(active_players).coroutine(leader)
+        current_player = next(turns)
 
-    def score_round(self):
+        for trick_number in range(5):
+            CLI.clear()
+            CLI.header(f"TRICK {trick_number + 1}")
+            print(f"Trump: {current_round.trump}")
+            print()
+            winner = current_round.play_trick(
+                turns,
+                current_player
+            )
+
+            current_player = turns.send(winner)
+            CLI.pause()
+
+    def score_round(
+        self,
+        current_round
+    ):
         """
         Displays round results and updates score.
         """
-        CLI.header("ROUND STATISTICS")
+        team0_tricks = current_round.team_tricks[0]
+        team1_tricks = current_round.team_tricks[1]
+
+        CLI.clear()
+        CLI.header("ROUND RESULT")
+
+        if current_round.going_alone:
+            print(f"\n{current_round.caller.name} went alone!")
+
+        print()
+
+        print(f"Team 1 tricks: {team0_tricks}/5")
+        print(f"Team 2 tricks: {team1_tricks}/5")
+
+        # Determine winner
+        caller_team = current_round.caller.team_number
+        caller_tricks = current_round.team_tricks[caller_team]
+
+        # Determine who earns the points
+        if caller_tricks >= 3:
+            winning_team = 1 + caller_team
+        else:
+            winning_team = 2 - caller_team
+
+        points = Scoring.calculate(
+            caller_tricks,
+            current_round.going_alone
+        )
+
+        print()
+
+        print(f"Team {winning_team} wins the round!")
+
+        if caller_tricks == 5 or caller_tricks == 0:
+            print("March! All five tricks won.")
+
+        print()
+
+        print(f"Points earned: +{points}")
+
+        # Update score
+        self.game.add_points(
+            winning_team - 1,
+            points
+        )
+        self.game_repo.update_score(
+            self.game.game_id,
+            self.game.score[0],
+            self.game.score[1],
+        )
+        self.round_repo.finish_round(
+            current_round.round_id,
+            points,
+            winning_team - 1
+        )
+
+        self.game.display_score()
