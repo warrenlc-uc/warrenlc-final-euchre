@@ -13,6 +13,7 @@ class Player(ABC):
 
         self.hand = []
         self.team = None
+        self.team_number = None
         self.seat = None
 
     def receive_cards(self, cards):
@@ -73,6 +74,16 @@ class Player(ABC):
 
         # Can play anything if unable to follow
         return self.hand
+
+    def get_partner(
+        self,
+    ):
+        """
+        Returns a player's teammate.
+        """
+        if not self.team:
+            return None
+        return self.team.players[0] if self.team.players[1] == self else self.team.players[1]
 
     @abstractmethod
     def play_card(self, lead_suit, trump):
