@@ -17,7 +17,9 @@ def main():
             choice = Menus.main_menu()
             if choice == 1:
                 name = input("Player name: ")
-                if player_repo.exists(name):
+                if not name.strip():
+                    print("Cannot add an empty username.")
+                elif player_repo.exists(name):
                     print("Player already exists.")
                 else:
                     player_repo.create_player(name)
