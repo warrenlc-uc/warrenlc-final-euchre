@@ -1,5 +1,6 @@
 from database.database_manager import DatabaseManager
 from database.player_repository import PlayerRepository
+from database.statistics_repository import StatisticsRepository
 
 from ui.menus import Menus
 from ui.cli import CLI
@@ -12,6 +13,8 @@ def main():
         database.initialize(create_new=True)
 
         player_repo = PlayerRepository(database)
+        stats_repo = StatisticsRepository(database)
+
 
         while True:
             choice = Menus.main_menu()
@@ -29,7 +32,10 @@ def main():
             elif choice == 3:
                 print("TODO")
             elif choice == 4:
-                print("TODO")
+                show_statistics(
+                    player_repo,
+                    stats_repo
+                )
             elif choice == 5:
                 database.close()
                 break
@@ -43,6 +49,83 @@ def main():
     finally:
         database.close()
         print("Database connection closed.")
+
+
+def show_statistics(
+    player_repo,
+    stats_repo
+):
+    CLI.header( "Player Statistics")
+    players = player_repo.get_players()
+    humans = [p for p in players if not p[2]]
+    if len(humans) == 0:
+        print(
+            "Create a player first."
+        )
+        return
+    
+    print("Select player:")
+    for index, player in enumerate(humans, start=1):
+        print(f"{index}. {player[1]}")
+
+    choice = CLI.get_choice(
+        "Choice: ",
+        1,
+        len(humans)
+    )
+    player = humans[choice - 1]
+
+    stats = stats_repo.total_statistics(player[0])
+    games = stats["games"]
+    rounds = stats["rounds"]
+    tricks = stats["tricks"]
+    cards = stats["cards"]
+    favorite = stats["favorite_trump"]
+    euchred = stats["euchred"]
+
+    CLI.header(f"{player[1]}'s Statistics")
+
+    games_played = games[0] or 0
+    games_won = games[1] or 0
+
+    win_percent = (
+        0
+        if games_played == 0
+        else 100 * games_won / games_played
+    )
+
+    print("Games")
+    print("--------------------")
+    print(f"Finshed: {games_played}")
+    print(f"Won: {games_won}")
+    print(f"Win Rate: {win_percent:.1f}%")
+    print()
+
+    print("Rounds")
+    print("--------------------")
+    print(f"Played: {rounds[0] or 0}")
+    print(f"Called: {rounds[1] or 0}")
+    print(f"Successful Calls: {rounds[2] or 0}")
+    print(f"Lone Hands: {rounds[3] or 0}")
+    print(f"Lone Marches: {rounds[4] or 0}")
+    print(f"Euchred: {euchred[0] or 0}")
+    print()
+
+    print("Tricks")
+    print("--------------------")
+    print(f"Won: {tricks[0] or 0}")
+    print()
+
+    print("Cards")
+    print("--------------------")
+    print(f"Played: {cards[0] or 0}")
+    print()
+
+    if favorite:
+        print("Favorite Trump")
+        print("--------------------")
+        print(f"{favorite[0]} ({favorite[1]} calls)")
+
 
 if __name__ == "__main__":
     main()
