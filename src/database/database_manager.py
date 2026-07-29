@@ -9,6 +9,8 @@ class DatabaseManager:
         self.root = Path(__file__).resolve().parents[2]
         self.database_path = (self.root/"database"/"euchre.db")
         self.schema_path = (self.root/"database"/"schema.sql")
+        self.inserts_path = (self.root/"database"/"inserts.sql")
+
         self.connection = None
 
     def connect(self):
@@ -24,6 +26,11 @@ class DatabaseManager:
                 with open(self.schema_path, "r") as file:
                     schema = file.read()
                 self.connection.executescript(schema)
+                self.connection.commit()
+
+                with open(self.inserts_path, "r") as file:
+                    inserts = file.read()
+                self.connection.executescript(inserts)
                 self.connection.commit()
                 
         return self.connection
@@ -64,4 +71,9 @@ class DatabaseManager:
         with open(self.schema_path,"r") as file:
             schema = file.read()
         self.connection.executescript(schema)
+        self.commit()
+
+        with open(self.inserts_path,"r") as file:
+            inserts = file.read()
+        self.connection.executescript(inserts)
         self.commit()
