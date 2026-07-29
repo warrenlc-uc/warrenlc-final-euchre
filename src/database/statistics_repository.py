@@ -6,14 +6,9 @@ class StatisticsRepository:
         cursor = self.db.cursor()
         cursor.execute(
             """
-            SELECT
-                SUM(
-                    CASE
-                        WHEN gp.Team is not NULL
-                        THEN 1
-                        ELSE 0
-                    END
-                ) AS GamesPlayed,
+                SELECT
+
+                COUNT(*) AS GamesPlayed,
 
                 SUM(
                     CASE
@@ -29,6 +24,7 @@ class StatisticsRepository:
             ON gp.GameID = g.GameID
 
             WHERE gp.PlayerID = ?
+            AND g.WinningTeam IS NOT NULL
             """,
             (player_id,)
         )
