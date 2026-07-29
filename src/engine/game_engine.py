@@ -1,12 +1,9 @@
 from ui.cli import CLI
 
-
-
 class GameEngine:
     """
     Controls the flow of a Euchre game.
     """
-
     def __init__(self):
         pass
 
@@ -24,15 +21,11 @@ class GameEngine:
             self.score_round()
             CLI.pause()
 
-
-
     def show_round_start(self):
         """
         Displays information for the round.
         """
         CLI.header("NEW ROUND")
-
-
 
     def select_trump(self):
         """
@@ -49,15 +42,11 @@ class GameEngine:
         """
         CLI.header("SELECT TRUMP")
 
-
-
     def play_round(self):
         """
         Completes a single round of play.
         """
         CLI.header("PLAY HERE")
-
-
 
     def score_round(self):
         """
