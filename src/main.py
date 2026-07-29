@@ -4,7 +4,7 @@ from database.statistics_repository import StatisticsRepository
 from database.game_repository import GameRepository
 from database.round_repository import RoundRepository
 from database.trick_repository import TrickRepository
-
+from database.card_play_repository import CardPlayRepository
 
 from engine.game_engine import GameEngine
 from classes.human_player import HumanPlayer
@@ -25,10 +25,13 @@ def main():
         game_repo = GameRepository(database)
         round_repo = RoundRepository(database)
         trick_repo = TrickRepository(database)
+        card_play_repo = CardPlayRepository(database)
 
 
         while True:
+            CLI.clear()
             choice = Menus.main_menu()
+            CLI.clear()
             if choice == 1:
                 name = input("Player name: ")
                 if not name.strip():
@@ -41,7 +44,7 @@ def main():
             elif choice == 2:
                 CLI.show_players(player_repo.get_players())
             elif choice == 3:
-                start_game(player_repo, game_repo, round_repo, trick_repo)
+                start_game(player_repo, game_repo, round_repo, trick_repo, card_play_repo)
             elif choice == 4:
                 show_statistics(
                     player_repo,
@@ -66,7 +69,8 @@ def start_game(
     player_repo,
     game_repo,
     round_repo,
-    trick_repo
+    trick_repo,
+    card_play_repo
 ):
     CLI.header("Starting Game")
     players = player_repo.get_players()
@@ -132,7 +136,8 @@ def start_game(
         team1,
         game_repo,
         round_repo,
-        trick_repo
+        trick_repo,
+        card_play_repo
     )
     game.start()
 
@@ -160,6 +165,8 @@ def show_statistics(
         len(humans)
     )
     player = humans[choice - 1]
+
+    CLI.clear()
 
     stats = stats_repo.total_statistics(player[0])
     games = stats["games"]

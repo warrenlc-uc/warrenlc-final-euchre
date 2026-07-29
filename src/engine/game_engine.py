@@ -16,11 +16,13 @@ class GameEngine:
             team1,
             game_repo,
             round_repo,
-            trick_repo
+            trick_repo,
+            card_play_repo
         ):
             self.game_repo = game_repo
             self.round_repo = round_repo
             self.trick_repo = trick_repo
+            self.card_play_repo = card_play_repo
             game_id = game_repo.create_game()
             self.players = players
             self.game = Game(
@@ -47,7 +49,7 @@ class GameEngine:
             dealer = self.game.current_dealer()
             print(f"Dealer: {dealer.name}")
 
-            current_round = Round(dealer, self.players, self.round_repo, self.trick_repo)
+            current_round = Round(dealer, self.players, self.round_repo, self.trick_repo, self.card_play_repo)
             current_round.deal()
             self.show_round_start(current_round)
             self.select_trump(current_round)

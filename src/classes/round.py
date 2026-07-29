@@ -20,11 +20,13 @@ class Round:
         dealer,
         players,
         round_repo,
-        trick_repo
+        trick_repo,
+        card_play_repo
     ):
         self.round_id = None
         self.round_repo = round_repo
         self.trick_repo = trick_repo
+        self.card_play_repo = card_play_repo
         self.dealer = dealer
         self.players = players
         self.trump = None
@@ -148,6 +150,13 @@ class Round:
             )
 
             trick.add_play(player, card)
+
+            self.card_play_repo.add_play(
+                trick.trick_id,
+                player.player_id,
+                card.card_id,
+                i
+            )
 
             if i < len(active_players)-1:
                 current_player = turns.send(None)
