@@ -113,7 +113,7 @@ class HumanPlayer(Player):
                 marker = "✓"
             else:
                 marker = "✗"
-            print(f"{index}. {str(card)} {marker}")
+            print(f"{index}. {str(card):<25} {marker}")
 
         while True:
             try:

@@ -66,9 +66,10 @@ class GameEngine:
             CLI.pause()
             self.play_round(current_round)
             self.score_round(current_round)
+            self.game.add_round(current_round)
             self.game.rotate_dealer()
             CLI.pause()
-        print(f"\nTeam {self.game.winner} wins!")
+        print(f"\nTeam {self.game.winner + 1} wins!")
 
     def show_round_start(self, current_round):
         """

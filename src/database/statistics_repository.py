@@ -9,7 +9,7 @@ class StatisticsRepository:
             SELECT
                 SUM(
                     CASE
-                        WHEN gp.Team != NULL
+                        WHEN gp.Team is not NULL
                         THEN 1
                         ELSE 0
                     END

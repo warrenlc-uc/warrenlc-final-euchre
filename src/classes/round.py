@@ -118,8 +118,15 @@ class Round:
         """
         Finds the next player from the dealer clockwise.
         """
-        index = self.players.index(self.dealer)
-        return self.players[(index + 1) % 4]
+        players = self.get_active_players()
+
+        all_players = self.players
+        dealer_idx = all_players.index(self.dealer)
+        
+        for i in range(1, len(all_players) + 1):
+            next_player = all_players[(dealer_idx + i) % len(all_players)]
+            if next_player in players:
+                return next_player
 
     def play_trick(
         self,
