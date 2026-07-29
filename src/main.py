@@ -2,6 +2,7 @@ from database.database_manager import DatabaseManager
 from database.player_repository import PlayerRepository
 from database.statistics_repository import StatisticsRepository
 
+from engine.game_engine import GameEngine
 from ui.menus import Menus
 from ui.cli import CLI
 
@@ -30,7 +31,7 @@ def main():
             elif choice == 2:
                 CLI.show_players(player_repo.get_players())
             elif choice == 3:
-                print("TODO")
+                start_game(player_repo)
             elif choice == 4:
                 show_statistics(
                     player_repo,
@@ -49,6 +50,27 @@ def main():
     finally:
         database.close()
         print("Database connection closed.")
+
+
+def start_game(
+    player_repo
+):
+    CLI.header("Starting Game")
+
+    players = player_repo.get_players()
+    humans = [p for p in players if not p[2]]
+
+    if len(humans) == 0:
+        print("Create a player first.")
+        return
+
+    print("Select player:")
+    for index, player in enumerate(humans, start=1):
+        print(f"{index}. {player[1]}")
+    choice = CLI.get_choice("Choice: ", 1, len(humans))
+    selected = humans[choice - 1]
+    game = GameEngine()
+    game.start()
 
 
 def show_statistics(

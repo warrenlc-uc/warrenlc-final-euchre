@@ -1,0 +1,66 @@
+from ui.cli import CLI
+
+
+
+class GameEngine:
+    """
+    Controls the flow of a Euchre game.
+    """
+
+    def __init__(self):
+        pass
+
+    def start(self):
+        print("\nStarting Euchre!")
+        CLI.pause()
+
+        while True:
+            CLI.clear()
+            self.show_round_start()
+            self.select_trump()
+            CLI.pause()
+            self.play_round()
+            CLI.pause()
+            self.score_round()
+            CLI.pause()
+
+
+
+    def show_round_start(self):
+        """
+        Displays information for the round.
+        """
+        CLI.header("NEW ROUND")
+
+
+
+    def select_trump(self):
+        """
+        Implements Euchre bidding.
+
+        Round 1:
+        Order up the face card.
+
+        Round 2:
+        Pick another suit.
+
+        Stick the dealer:
+        Dealer must choose.
+        """
+        CLI.header("SELECT TRUMP")
+
+
+
+    def play_round(self):
+        """
+        Completes a single round of play.
+        """
+        CLI.header("PLAY HERE")
+
+
+
+    def score_round(self):
+        """
+        Displays round results and updates score.
+        """
+        CLI.header("ROUND STATISTICS")
