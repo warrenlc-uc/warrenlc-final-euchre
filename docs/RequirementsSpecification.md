@@ -3,9 +3,13 @@
 ## Project Information
 
 **Project:** Euchre Game
+
 **Language:** Python
+
 **Database:** SQLite
+
 **Application Type:** CLI
+
 **Programming Paradigm:** Object-Oriented Programming with Python coroutines for turn management
 
 ---
